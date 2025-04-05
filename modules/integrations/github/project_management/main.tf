@@ -7,11 +7,6 @@ terraform {
   }
 }
 
-locals {
-  repository_name = "kanban"
-  github_owner    = "TheEndIsNear"
-}
-
 resource "github_repository" "kanban" {
   name                   = local.repository_name
   description            = "Taking the BEAM to production pragmatically."
@@ -20,15 +15,6 @@ resource "github_repository" "kanban" {
   auto_init              = true
   gitignore_template     = "Terraform"
   delete_branch_on_merge = true
-}
-
-variable "milestones" {
-  type = map(object({
-    title       = string
-    due_date    = string
-    description = string
-  }))
-  description = "Milestones, consider them the biggest deliverable unit."
 }
 
 resource "github_repository_milestone" "epics" {
@@ -41,29 +27,12 @@ resource "github_repository_milestone" "epics" {
   due_date    = each.value.due_date
 }
 
-variable "labels" {
-  type = map(object({
-    name  = string
-    color = string
-  }))
-  description = "The labels to tag the issues."
-}
-
 resource "github_issue_label" "issue_labels" {
   depends_on = [github_repository.kanban]
   for_each   = var.labels
   repository = local.repository_name
   name       = each.value.name
   color      = each.value.color
-}
-
-variable "issues" {
-  type = list(object({
-    title     = string
-    body      = string
-    labels    = list(string)
-    milestone = string
-  }))
 }
 
 resource "github_issue" "tasks" {
