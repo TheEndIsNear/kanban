@@ -9,6 +9,12 @@ jobs:
     env:
       MIX_ENV: test
     steps:
+      - uses: actions/checkout@v4
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1.18.2
+        with:
+          version-file: .tool-versions
+          version-type: strict
       - name: Cache deps directory
         uses: actions/cache@v4
         id: cache-deps
@@ -19,12 +25,6 @@ jobs:
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
             ${{ runner.os }}-mix-
-      - uses: actions/checkout@v4
-      - name: Setup Elixir
-        uses: erlef/setup-beam@v1.18.2
-        with:
-          version-file: .tool-versions
-          version-type: strict
       - name: Get Dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: mix deps.get
