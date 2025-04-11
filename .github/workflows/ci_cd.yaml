@@ -9,6 +9,16 @@ jobs:
     env:
       MIX_ENV: test
     steps:
+      - name: Cache deps directory
+        uses: actions/cache@v4
+        id: cache-deps
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
       - uses: actions/checkout@v4
       - name: Setup Elixir
         uses: erlef/setup-beam@v1.18.2
