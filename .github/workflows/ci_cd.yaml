@@ -72,7 +72,7 @@ jobs:
         run: dockerlint Dockerfile
   build-push:
     runs-on: ubuntu-latest
-    needs: ci
+    needs: [ci, lint]
     name: Build Docker image & push to ghcr.io
     steps:
       - uses: actions/checkout@v4
