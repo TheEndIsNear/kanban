@@ -56,9 +56,20 @@ jobs:
       - name: Check unused dependencies
         run: mix deps.unlock --check-unused
       - name: Setup Snyk
-        uses: snyk/actions/setup@master
+        uses: snyk/actions/setup@v2
       - name: Run Snyk to check for vulnerabilities
         run: snyk test --all-projects --fail-on=all
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dockerlint
+        run: npm install -g dockerlint
+      - name: Lint Dockerfile
+        run: dockerlint Dockerfile
   build-push:
     runs-on: ubuntu-latest
     needs: ci
@@ -99,3 +110,10 @@ jobs:
           build-args: |
             ELIXIR_VERSION=${{ env.ELIXIR_VERSION}}
             OTP_VERSION=${{ env.ERLANG_VERSION }}
+      - name: Scan Docker image with Snyk
+        if: github.ref == 'refs/heads/main'
+        uses: snyk/actions/docker@v1
+        with:
+          image: ghcr.io/theendisnear/kanban:${{ github.sha }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
