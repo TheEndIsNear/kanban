@@ -36,7 +36,7 @@ jobs:
       - name: Coveralls
         uses: coverallsapp/github-action@v2
         with:
-          github-token: ${{ secrets.GH_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Check code is formatted
         run: mix format --check-formatted
       - name: Cache plt files
