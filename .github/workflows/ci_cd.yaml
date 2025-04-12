@@ -33,6 +33,8 @@ jobs:
         run: mix coveralls.github --max-failures 1 --trace --warnings-as-errors
       - name: Coveralls
         uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GH_PAT }}
       - name: Check code is formatted
         run: mix format --check-formatted
       - name: Cache plt files
