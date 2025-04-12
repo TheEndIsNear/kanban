@@ -32,9 +32,9 @@ jobs:
         run: mix deps.get
       - run: mix compile --warnings-as-errors
       - name: Run tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mix coveralls.github --max-failures 1 --trace --warnings-as-errors
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Check code is formatted
         run: mix format --check-formatted
       - name: Cache plt files
