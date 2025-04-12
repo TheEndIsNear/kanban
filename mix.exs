@@ -14,6 +14,14 @@ defmodule Kanban.MixProject do
         plt_core_path: "priv/plts/core.plt",
         plt_file: {:no_warn, "priv/plts/project.plt"},
         plt_add_apps: [:ex_unit]
+      ],
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        "coveralls.github": :test
       ]
     ]
   end
@@ -60,7 +68,8 @@ defmodule Kanban.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18.5", only: [:test]}
     ]
   end
 
