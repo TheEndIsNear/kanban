@@ -31,6 +31,8 @@ jobs:
       - run: mix compile --warnings-as-errors
       - name: Run tests
         run: mix coveralls.github --max-failures 1 --trace --warnings-as-errors
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
       - name: Check code is formatted
         run: mix format --check-formatted
       - name: Cache plt files
