@@ -104,10 +104,3 @@ jobs:
           build-args: |
             ELIXIR_VERSION=${{ env.ELIXIR_VERSION}}
             OTP_VERSION=${{ env.ERLANG_VERSION }}
-      - name: Scan Docker image with Snyk
-        if: github.ref == 'refs/heads/main'
-        uses: snyk/actions/docker@master
-        with:
-          image: ghcr.io/${{ github.repository_owner }}/kanban
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
