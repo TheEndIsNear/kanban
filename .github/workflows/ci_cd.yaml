@@ -31,7 +31,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-mix-
       - name: Get Dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: mix deps.get
       - run: mix compile --warnings-as-errors
       - name: Run tests
@@ -56,9 +55,18 @@ jobs:
         run: mix dialyzer --format github
       - name: Check unused dependencies
         run: mix deps.unlock --check-unused
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dockerlint
+        run: npm install -g dockerlint
+      - name: Lint Dockerfile
+        run: dockerlint Dockerfile
   build-push:
     runs-on: ubuntu-latest
-    needs: ci
+    needs: [ci, lint]
     name: Build Docker image & push to ghcr.io
     steps:
       - uses: actions/checkout@v4
@@ -96,3 +104,10 @@ jobs:
           build-args: |
             ELIXIR_VERSION=${{ env.ELIXIR_VERSION}}
             OTP_VERSION=${{ env.ERLANG_VERSION }}
+      - name: Scan Docker image with Snyk
+        if: github.ref == 'refs/heads/main'
+        uses: snyk/actions/docker@master
+        with:
+          image: ghcr.io/theendisnear/kanban:${{ github.sha }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

@@ -1,6 +1,6 @@
 ARG EX_VSN=1.18.3
 ARG OTP_VSN=27.3.2
-ARG DEB_VSN=buster-20240612-slim
+ARG DEB_VSN=bullseye-20250407-slim
 
 ARG BUILDER_IMG="hexpm/elixir:${EX_VSN}-erlang-${OTP_VSN}-debian-${DEB_VSN}"
 ARG RUNNER_IMG="debian:${DEB_VSN}"
@@ -56,7 +56,7 @@ ENV LANG="en_US.UTF-8"
 ENV LANGUAGE="en_US:en"
 ENV LC_ALL="en_US.UTF-8"
 
-WORKDIR "/app"
+WORKDIR /app
 RUN chown nobody /app
 
 # set the runner ENV
