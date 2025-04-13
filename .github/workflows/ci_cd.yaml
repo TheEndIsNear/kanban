@@ -108,6 +108,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: snyk/actions/docker@master
         with:
-          image: ghcr.io/theendisnear/kanban:${{ github.sha }}
+          image: ghcr.io/theendisnear/kanban:latest
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
