@@ -104,8 +104,6 @@ jobs:
           build-args: |
             ELIXIR_VERSION=${{ env.ELIXIR_VERSION}}
             OTP_VERSION=${{ env.ERLANG_VERSION }}
-      - name: Pull Latest docker image
-        if: github
       - name: Scan Docker image with Snyk
         if: github.ref == 'refs/heads/main'
         uses: snyk/actions/docker@master
