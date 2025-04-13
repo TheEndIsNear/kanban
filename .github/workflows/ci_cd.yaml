@@ -106,7 +106,7 @@ jobs:
             OTP_VERSION=${{ env.ERLANG_VERSION }}
       - name: Scan Docker image with Snyk
         if: github.ref == 'refs/heads/main'
-        uses: snyk/actions/docker@v1
+        uses: snyk/actions/docker@master
         with:
           image: ghcr.io/theendisnear/kanban:${{ github.sha }}
         env:
