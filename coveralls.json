@@ -1,0 +1,14 @@
+{
+  "skip_files": [
+    "lib/kanban.ex",
+    "lib/kanban/repo.ex",
+    "lib/kanban/mailer.ex",
+    "lib/kanban/application.ex",
+    "lib/kanban/release.ex",
+    "lib/kanban_web/components",
+    "lib/kanban_web/endpoint.ex",
+    "lib/kanban_web/gettext.ex",
+    "lib/kanban_web/controllers/page_html.ex",
+    "test/support/*"
+  ]
+}

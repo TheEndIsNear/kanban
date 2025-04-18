@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:17.4
+    healthcheck:
+      test: ["CMD", "pg_isready", "--username=postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - ${POSTGRES_PORT:-5432:5432}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  web:
+    image: ${WEB_IMAGE:-ghcr.io/theendisnear/kanban}
+    environment:
+      DATABASE_URL: ecto://postgres:postgres@db/postgres
+      SECRET_KEY_BASE: n1YGpA7gekHP/KmDqgDsx+zCug2WfHWfhZEu4+YMFP5tgh77Vy6g7lHnRZ/N3Ojt
+      PHX_HOST: ${PHX_HOST:-localhost}
+    deploy:
+      restart_policy: 
+        condition: on-failure
+        delay: 20s
+        window: 120s
+        max_attempts: 3
+    ports:
+      - ${PHOENIX_PORT:-4000:4000}
+    depends_on:
+      - db
+    command: >
+      bash -c "bin/migrate && bin/server"
+
+volumes:
+  db_data:
