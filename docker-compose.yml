@@ -16,12 +16,6 @@ services:
       - ${POSTGRES_PORT:-5432}
     volumes:
       - db_data:/var/lib/postgresql/data
-  debug:
-    image: ubuntu:latest
-    command: sleep infinity
-    tty: true
-    stdin_open: true
-
   web:
     image: ${WEB_IMAGE:-ghcr.io/theendisnear/kanban:latest}
     healthcheck:
