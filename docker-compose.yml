@@ -11,24 +11,36 @@ services:
         condition: on-failure
     environment:
       POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/pgdata
     ports:
-      - ${POSTGRES_PORT:-5432:5432}
+      - ${POSTGRES_PORT:-5432}
     volumes:
       - db_data:/var/lib/postgresql/data
+  debug:
+    image: ubuntu:latest
+    command: sleep infinity
+    tty: true
+    stdin_open: true
+
   web:
-    image: ${WEB_IMAGE:-ghcr.io/theendisnear/kanban}
+    image: ${WEB_IMAGE:-ghcr.io/theendisnear/kanban:latest}
+    healthcheck:
+      test: ["CMD", "curl", "localhost:4000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     environment:
       DATABASE_URL: ecto://postgres:postgres@db/postgres
       SECRET_KEY_BASE: n1YGpA7gekHP/KmDqgDsx+zCug2WfHWfhZEu4+YMFP5tgh77Vy6g7lHnRZ/N3Ojt
-      PHX_HOST: ${PHX_HOST:-localhost}
+      PHX_HOST: "localhost"
     deploy:
       restart_policy: 
         condition: on-failure
-        delay: 20s
+        delay: 5s
         window: 120s
         max_attempts: 3
     ports:
-      - ${PHOENIX_PORT:-4000:4000}
+      - 4000:4000
     depends_on:
       - db
     command: >

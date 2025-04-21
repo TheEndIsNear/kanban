@@ -1,6 +1,8 @@
 defmodule KanbanWeb.Router do
   use KanbanWeb, :router
 
+  alias KanbanWeb.Plugs.HealthCheck
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,10 @@ defmodule KanbanWeb.Router do
     plug :put_root_layout, html: {KanbanWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+  end
+
+  pipeline :health do
+    plug HealthCheck
   end
 
   pipeline :api do
@@ -18,6 +24,11 @@ defmodule KanbanWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+  end
+
+  scope "/" do
+    pipe_through :health
+    get "/health", HealthCheck, :call
   end
 
   # Other scopes may use custom stacks.
