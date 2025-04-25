@@ -3,7 +3,7 @@ erlang 27.3
 terraform 1.11.3
 awscli 2.25.11
 age 1.1.1
-sops 3.10.1
+sops 3.8.1
 packer 1.12.0
 jq 1.7.1
 act 0.2.76

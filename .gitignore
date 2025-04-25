@@ -76,3 +76,6 @@ npm-debug.log
 /priv/plts
 
 *.pem
+
+secrets/.*
+**/key.txt
