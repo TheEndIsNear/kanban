@@ -43,11 +43,11 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.gh_pat }}
         GITHUB_USER: ${{ inputs.github_user }}
-        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
-        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
       run: |-
-        SOPS_AGE_KEY_FILE=$(pwd)/key.txt \
-        PRIVATE_KEY_PATH="$(pwd)/private_key.pem" \
-        AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
-        AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
+        export SOPS_AGE_KEY_FILE=$(pwd)/key.txt
+        export PRIVATE_KEY_PATH="$(pwd)/private_key.pem"
+        export AWS_ACCESS_KEY_ID="${{ inputs.aws_access_key_id }}"
+        export AWS_SECRET_ACCESS_KEY="${{ inputs.aws_secret_access_key }}"
+        echo "AWS_ACCESS_KEY_ID is set: ${AWS_ACCESS_KEY_ID:+yes}"
+        echo "AWS Secret Access Key is set: ${AWS_SECRET_ACCESS_KEY:+yes}"
         ./scripts/deploy.sh ${{ inputs.image_tag }}
