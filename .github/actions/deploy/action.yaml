@@ -27,7 +27,7 @@ runs:
   steps:
     - uses: actions/checkout@v4
     - name: Setup SOPS
-      uses: nhedger/setup-sop2@v2
+      uses: nhedger/setup-sops@v2
       with:
         version: 3.8.1
     - uses: alessiodionisis/setup-age-action@v1.3.0
