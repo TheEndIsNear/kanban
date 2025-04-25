@@ -139,5 +139,5 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           age_key: ${{ secrets.AGE_KEY }}
-          ssh_private_key: ${{ secrets.PRIVATE_KLEY }}
+          ssh_private_key: ${{ secrets.PRIVATE_KEY }}
           image_tag: ${{ needs.build-push.outputs.unique_docker_tag }}

@@ -47,5 +47,5 @@ runs:
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
       run: |-
         SOPS_AGE_KEY_FILE=$(pwd)/key.txt \
-        PRIVATTE_KEY_PATH="$(pwd)/private_key.pem" \
+        PRIVATE_KEY_PATH="$(pwd)/private_key.pem" \
         ./scripts/deploy.sh ${{ inputs.image_tag }}
