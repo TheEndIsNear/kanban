@@ -1,6 +1,8 @@
 services:
   db:
     image: postgres:17.4
+    secrets:
+      - postgrespassword
     healthcheck:
       test: ["CMD", "pg_isready", "--username=postgres"]
       interval: 10s
@@ -10,7 +12,7 @@ services:
       restart_policy:
         condition: on-failure
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgrespassword
       PGDATA: /var/lib/postgresql/pgdata
     ports:
       - ${POSTGRES_PORT:-5432}
@@ -18,14 +20,17 @@ services:
       - db_data:/var/lib/postgresql/data
   web:
     image: ${WEB_IMAGE:-ghcr.io/theendisnear/kanban:latest}
+    secrets:
+      - databaseurl
+      - secretkeybase
     healthcheck:
       test: ["CMD", "curl", "localhost:4000/health"]
       interval: 30s
       timeout: 5s
       retries: 3
     environment:
-      DATABASE_URL: ecto://postgres:postgres@db/postgres
-      SECRET_KEY_BASE: n1YGpA7gekHP/KmDqgDsx+zCug2WfHWfhZEu4+YMFP5tgh77Vy6g7lHnRZ/N3Ojt
+      DATABASE_URL_FILE: /run/secrets/databaseurl
+      SECRET_KEY_BASE_FILE: /run/secrets/secretkeybase
       PHX_HOST: "localhost"
     deploy:
       restart_policy: 
@@ -42,3 +47,11 @@ services:
 
 volumes:
   db_data:
+
+secrets:
+  postgrespassword:
+    file: ./secrets/.postgrespassword
+  databaseurl:
+    file: ./secrets/.databaseurl
+  secretkeybase:
+    file: ./secrets/.secretkeybase
