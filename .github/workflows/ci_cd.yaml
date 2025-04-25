@@ -96,7 +96,7 @@ jobs:
           images: |
             ghcr.io/theendisnear/kanban
           tags: |
-            type=raw,value=lates,enable={{is_default_branch}}
+            type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=pr
             type=sha,format=short
       - name: Parse versions from .tool-versions
