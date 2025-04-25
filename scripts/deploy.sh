@@ -20,10 +20,10 @@ if [ -z "$PRIVATE_KEY_PATH" ]; then
 	echo "Error: Please set the PRIVATE_KEY_PATH environment variable."
 	exit 1
 fi
-if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
-	echo "Error: Please set the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY."
-	exit 1
-fi
+#if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+#	echo "Error: Please set the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY."
+#	exit 1
+#fi
 if [ -z "$GITHUB_TOKEN" ] || [ -z "$GITHUB_USER" ]; then
 	echo "Error: Please set both the GITHUB_TOKEN and GITHUB_USER."
 	exit 1
