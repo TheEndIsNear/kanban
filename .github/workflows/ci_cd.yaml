@@ -140,4 +140,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           age_key: ${{ secrets.AGE_KEY }}
           ssh_private_key: ${{ secrets.PRIVATE_KLEY }}
-          image_tag: ${{ neds.build-push.outputs.unique_docker_tag }}
+          image_tag: ${{ needs.build-push.outputs.unique_docker_tag }}
