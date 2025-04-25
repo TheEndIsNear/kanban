@@ -48,4 +48,6 @@ runs:
       run: |-
         SOPS_AGE_KEY_FILE=$(pwd)/key.txt \
         PRIVATE_KEY_PATH="$(pwd)/private_key.pem" \
+        AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
+        AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
         ./scripts/deploy.sh ${{ inputs.image_tag }}
