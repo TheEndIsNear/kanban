@@ -55,6 +55,11 @@ resource "aws_instance" "my_swarm" {
   vpc_security_group_ids = [
     aws_security_group.swarm_pool_ports.id
   ]
+
+  user_data = <<-EOF
+    #!/usr/bin/env bash
+    docker swarm init
+    EOF
 }
 
 resource "aws_security_group" "swarm_pool_ports" {
