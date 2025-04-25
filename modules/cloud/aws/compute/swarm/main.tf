@@ -4,6 +4,14 @@ terraform {
       source  = "hashicorp/aws"
       version = "5.95.0"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "4.0.6"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "2.5.2"
+    }
   }
 }
 
@@ -20,24 +28,36 @@ data "aws_subnets" "main_subnets" {
     values = [data.aws_vpc.main.id]
   }
 }
+resource "aws_key_pair" "deployer_key" {
+  key_name   = "swarm-key"
+  public_key = tls_private_key.rsa.public_key_openssh
+}
 
 resource "aws_instance" "my_swarm" {
   ami                         = "ami-0ce8c2b29fcc8a346"
   associate_public_ip_address = true
   availability_zone           = "eu-west-1b"
   instance_type               = "t2.micro"
-  key_name                    = "swarm-key"
+  key_name                    = aws_key_pair.deployer_key.key_name
   subnet_id                   = data.aws_subnets.main_subnets.ids[1]
   tags = {
     "Name" = "docker-swarm-manager"
   }
   vpc_security_group_ids = [
-    aws_security_group.swarm_sg.id
+    aws_security_group.swarm_pool_ports.id
   ]
+  user_data = <<-EOF
+    #!/usr/bin/env bash
+    sudo dnf update -y && \
+    sudo dnf install -y docker && \
+    sudo systemctl start docker && \
+    sudo systemctl enable docker && \
+    sudo usermod -a -G docker ec2-user && \
+    newgrp docker
+    EOF
 }
 
-resource "aws_security_group" "swarm_sg" {
-  description = "launch-wizard-1 created 2025-04-21T13:37:23.115Z"
+resource "aws_security_group" "swarm_pool_ports" {
   egress = [
     {
       cidr_blocks = [
@@ -81,10 +101,24 @@ resource "aws_security_group" "swarm_sg" {
       to_port          = 4000
     },
   ]
-  name        = "launch-wizard-1"
   name_prefix = null
   tags        = {}
   tags_all    = {}
   vpc_id      = data.aws_vpc.main.id
 }
 
+resource "tls_private_key" "rsa" {
+  algorithm = "RSA"
+  rsa_bits  = "4096"
+}
+
+variable "private_key_path" {
+  description = "The path to the private key file."
+  type        = string
+}
+
+resource "local_sensitive_file" "private_key" {
+  filename        = var.private_key_path
+  content         = tls_private_key.rsa.private_key_pem
+  file_permission = "0400"
+}

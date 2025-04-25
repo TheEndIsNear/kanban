@@ -1,8 +1,8 @@
 module "swarm" {
-  source = "../../modules/cloud/aws/compute/swarm"
+  source           = "../../modules/cloud/aws/compute/swarm"
+  private_key_path = "${path.module}/private_key.pem"
 }
 
-import {
-  to = module.swarm.aws_security_group.swarm_sg
-  id = "sg-0e58912ab10413cf4"
+output "swarm_ssh_command" {
+  value = module.swarm.ssh_command
 }
