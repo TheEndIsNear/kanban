@@ -136,7 +136,7 @@ jobs:
         with:
           github_user: ${{ github.repository_owner }}
           gh_pat: ${{ secrets.GH_PAT }}
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           age_key: ${{ secrets.AGE_KEY }}
           ssh_private_key: ${{ secrets.PRIVATE_KEY }}
