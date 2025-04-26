@@ -37,7 +37,7 @@ runs:
       shell: bash
       run: |-
         echo "${{ inputs.age_key }}" > ./key.txt
-        echo "${{ inputs.ssh_private_key }}" > .private_key.pem
+        echo "${{ inputs.ssh_private_key }}" > ./private_key.pem
     - name: Deploy
       shell: bash
       env:
