@@ -42,13 +42,16 @@ resource "aws_key_pair" "deployer_key" {
   public_key = tls_private_key.rsa.public_key_openssh
 }
 
-resource "aws_instance" "my_swarm" {
+resource "aws_instance" "swarm_node" {
+  count                       = var.number_of_nodes
   ami                         = data.aws_ami.amazon_linux_docker.id
   associate_public_ip_address = true
-  availability_zone           = "eu-west-1b"
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.deployer_key.key_name
-  subnet_id                   = data.aws_subnets.main_subnets.ids[1]
+  iam_instance_profile        = aws_iam_instance_profile.main_profile.name
+  subnet_id = data.aws_subnets.main_subnets.ids[
+    count.index % length(data.aws_subnets.main_subnets.ids)
+  ]
   tags = {
     "Name" = "docker-swarm-manager"
   }

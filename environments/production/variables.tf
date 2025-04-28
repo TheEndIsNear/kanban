@@ -3,6 +3,7 @@ variable "aws_access_key_id" {
   type        = string
 }
 
+
 variable "aws_secret_access_key" {
   description = "The AWS secret access key."
   type        = string
@@ -19,4 +20,9 @@ variable "gh_pat" {
   description = "A GitHub personal access token. Used to login to ghcr.io."
   type        = string
   sensitive   = true
+}
+
+variable "account_id" {
+  type        = string
+  description = "AWS account ID"
 }
