@@ -1,6 +1,7 @@
 module "swarm" {
   source           = "../../modules/cloud/aws/compute/swarm"
   private_key_path = "${path.module}/private_key.pem"
+  account_id       = var.account_id
 }
 
 module "repository_secrets" {
@@ -16,6 +17,15 @@ module "repository_secrets" {
   github_owner = "theendisnear"
 }
 
-output "swarm_ssh_command" {
-  value = module.swarm.ssh_command
+module "contributing_workflow" {
+  source       = "../../modules/integrations/github/contributing_workflow"
+  repository   = "kanban"
+  github_owner = "theendisnear"
+  status_checks = [
+    "Compile with mix test, format, dialyzer & unused deps check"
+  ]
+}
+
+output "swarm_ssh_commands" {
+  value = module.swarm.ssh_commands
 }
