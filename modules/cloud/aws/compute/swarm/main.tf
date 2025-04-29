@@ -42,6 +42,24 @@ resource "aws_key_pair" "deployer_key" {
   public_key = tls_private_key.rsa.public_key_openssh
 }
 
+locals {
+  init_script = file("${path.module}/scripts/initialize.sh")
+  manager_tag = "docker-swarm-manager"
+  join_script = templatefile("${path.module}/scripts/join.sh", {
+    manager_tag = local.manager_tag,
+    region      = var.region
+  })
+}
+resource "aws_ssm_parameter" "swarm_token" {
+  name        = "/docker/swarm_manager_token"
+  description = "The swarm manager join token"
+  type        = "SecureString"
+  value       = "NONE"
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
 resource "aws_instance" "swarm_node" {
   count                       = var.number_of_nodes
   ami                         = data.aws_ami.amazon_linux_docker.id
@@ -53,66 +71,19 @@ resource "aws_instance" "swarm_node" {
     count.index % length(data.aws_subnets.main_subnets.ids)
   ]
   tags = {
-    "Name" = "docker-swarm-manager"
+    Name = local.manager_tag
   }
   vpc_security_group_ids = [
-    aws_security_group.swarm_pool_ports.id
+    aws_security_group.swarm_sg.id
   ]
 
-  user_data = <<-EOF
-    #!/usr/bin/env bash
-    docker swarm init
-    EOF
-}
+  user_data = count.index == 0 ? local.init_script : local.join_script
 
-resource "aws_security_group" "swarm_pool_ports" {
-  egress = [
-    {
-      cidr_blocks = [
-        "0.0.0.0/0",
-      ]
-      description      = null
-      from_port        = 0
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      protocol         = "-1"
-      security_groups  = []
-      self             = false
-      to_port          = 0
-    },
-  ]
-  ingress = [
-    {
-      cidr_blocks = [
-        "0.0.0.0/0",
-      ]
-      description      = null
-      from_port        = 22
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      protocol         = "tcp"
-      security_groups  = []
-      self             = false
-      to_port          = 22
-    },
-    {
-      cidr_blocks = [
-        "0.0.0.0/0",
-      ]
-      description      = null
-      from_port        = 4000
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      protocol         = "tcp"
-      security_groups  = []
-      self             = false
-      to_port          = 4000
-    },
-  ]
-  name_prefix = null
-  tags        = {}
-  tags_all    = {}
-  vpc_id      = data.aws_vpc.main.id
+  lifecycle {
+    ignore_changes = [tags]
+  }
+
+  depends_on = [aws_ssm_parameter.swarm_token]
 }
 
 resource "tls_private_key" "rsa" {
