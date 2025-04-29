@@ -12,6 +12,10 @@ terraform {
       source  = "hashicorp/local"
       version = "2.5.2"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "3.2.1"
+    }
   }
 }
 
@@ -100,4 +104,32 @@ resource "local_sensitive_file" "private_key" {
   filename        = var.private_key_path
   content         = tls_private_key.rsa.private_key_pem
   file_permission = "0400"
+}
+
+resource "null_resource" "wait_for_swarm_ready_tag" {
+  provisioner "local-exec" {
+    environment = {
+      AWS_REGION           = var.region
+      INSTANCE_MANAGER_TAG = local.manager_tag
+    }
+    command = "../../scripts/wait_for_swarm_ready_tag.sh"
+  }
+  depends_on = [aws_instance.swarm_node]
+}
+
+resource "null_resource" "swarm_provisioner" {
+  provisioner "local-exec" {
+    environment = {
+      GITHUB_USER           = var.gh_owner
+      GITHUB_TOKEN          = var.gh_pat
+      AWS_SECRET_ACCESS_KEY = var.aws_secret_access_key
+      AWS_ACCESS_KEY_ID     = var.aws_access_key_id
+      PRIVATE_KEY_PATH      = var.private_key_path
+      SOPS_AGE_KEY_FILE     = var.age_key_path
+      COMPOSE_FILE_PATH     = var.compose_file
+      WEB_REPLICAS          = length(aws_instance.swarm_node)
+    }
+    command = "../../scripts/deploy.sh ${var.image_to_deploy}"
+  }
+  depends_on = [null_resource.wait_for_swarm_ready_tag]
 }

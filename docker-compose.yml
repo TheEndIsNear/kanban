@@ -33,6 +33,8 @@ services:
       SECRET_KEY_BASE_FILE: /run/secrets/secretkeybase
       PHX_HOST: "localhost"
     deploy:
+      replicas:
+        ${WEB_REPLICAS:-1}
       restart_policy: 
         condition: on-failure
         delay: 5s
