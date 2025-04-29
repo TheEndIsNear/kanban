@@ -22,6 +22,9 @@ inputs:
   ssh_private_key:
     description: "The SSH key used to run docker commands on the remote host"
     required: true
+  compose_file_path:
+    description: "The docker compose file path"
+    required: true
 runs:
   using: "composite"
   steps:
@@ -43,6 +46,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.gh_pat }}
         GITHUB_USER: ${{ inputs.github_user }}
+        COMPOSE_FILE_PATH: ${{ inputs.compose_file_path }}
       run: |-
         export SOPS_AGE_KEY_FILE=$(pwd)/key.txt
         export PRIVATE_KEY_PATH="$(pwd)/private_key.pem"
@@ -50,4 +54,5 @@ runs:
         export AWS_SECRET_ACCESS_KEY="${{ inputs.aws_secret_access_key }}"
         echo "AWS_ACCESS_KEY_ID is set: ${AWS_ACCESS_KEY_ID:+yes}"
         echo "AWS Secret Access Key is set: ${AWS_SECRET_ACCESS_KEY:+yes}"
+        echo "COMPOSE_FILE_PATH is ${COMPOSE_FILE_PATH}"
         ./scripts/deploy.sh ${{ inputs.image_tag }}

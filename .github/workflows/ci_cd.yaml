@@ -1,4 +1,4 @@
-name: CI/CD Elixir
+n::ame: CI/CD Elixir
 on:
   push:
     branches: [main]
@@ -141,3 +141,4 @@ jobs:
           age_key: ${{ secrets.AGE_KEY }}
           ssh_private_key: ${{ secrets.PRIVATE_KEY }}
           image_tag: ${{ needs.build-push.outputs.unique_docker_tag }}
+          compose_file_path: "./docker-compose.yml"
