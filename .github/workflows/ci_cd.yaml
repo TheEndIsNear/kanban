@@ -1,4 +1,4 @@
-n::ame: CI/CD Elixir
+name: CI/CD Elixir
 on:
   push:
     branches: [main]
