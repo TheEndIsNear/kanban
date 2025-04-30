@@ -69,10 +69,10 @@ defmodule Kanban.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
-      {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.18.5", only: [:test]}
+      {:excoveralls, "~> 0.18.5", only: [:test]},
+      {:dns_cluster, "~> 0.2.0"}
     ]
   end
 
